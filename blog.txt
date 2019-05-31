@@ -1,0 +1,58 @@
+
+It's important to emphasize something here, because it blew my mind when I first read it: after the MRL NN is fully trained, when it plays this moving-MAB, each episode, it's learning to play the same game as the classic MAB above, but *without gradient descent*. It has been trained to both explore the different arms, figure out which is the better one, and then exploit it as much as it can within a single episode.
+
+This is very cool! It has "learned to learn", hence the name. You could say that it's not that different than the light sequence game; it's basically just doing what RNNs do, using history to make decisions. However, it has to do something a little unusual to learn this, which a typical RNN/RL formulation couldn't do.
+
+Here's a setup for the light sequence game:
+
+<<<< >>>>>>>>>>>>.
+
+Note that I just need to give it the current state: it has the past states in there, and it learns via <<<<< >>>>>>>>>.
+
+On the other hand, this is the block diagram for MRL:
+
+<<<<<<<<<<<< >>>>>>>>>>>>>>>>>
+
+Note that it also gets the current state, but also gets the last action taken, the reward gotten, and the timestep it's in.
+
+
+Even cooler, however, is that it can learn more than just the 90/10 or 10/90 scenario. That one is pretty easy: aside from being coupled (because it's essentially p_1 = 1 - p_2), they're really lopsided, making it easier to figure out. Even further, it's always one of the two options. However, if you make the problem harder by relaxing these constraints and letting both arms be independent and range anywhere from from 0 to 1, it can still figure it out!
+
+What the authors say is that it has learned to solve this *subset* of problems. However, that leaves an interesting question: "subset" is vague... how far does it apply?
+
+
+
+
+**Neural Architecture Search**
+
+Since NNs are so powerful and flexible, designing them is a big deal. So you can imagine how clever the first person who thought *"what if I use a NN... to DESIGN A NN?!??"* felt. This has of course been done in a million ways, but a popular way that a few papers have used is what I'll call NAS. The main idea is to train an RL agent to be effective at designing NNs.
+
+
+When I first read this, I'll admit, I was a little skeptical. It struck me as people with an RL hammer looking for a nail; RL is often applied where it doesn't need to be.
+
+However, it now seems more reasonable to me: designing a NN has a large exploration aspect (which RL excels at), and it's not exactly a supervised problem: if you're designing two CNNs for image recognition, you can report the test scores for both, but you don't really get answers/labels, per se. So, that's a pretty good setup for RL.
+
+The way they've usually done it is with an RNN, though the details differ. The basic idea is that the "agent" starts in the "no NN layers" state, and then can do actions like adding various layers/properties of layers, which brings it to a new state. It needs to be an RNN because it needs to know what it's added so far, to add more things.
+
+And it works pretty great! People have made near state-of-the-art using this method.
+
+
+
+**Bringing it together with MRL-NAS**
+
+NAS is cool, but a little inflexible in my opinion. Similar to how a vanilla RL agent can learn to play *a specific MAB*, but can't do it if the p's change, a NAS agent gets trained to *produce a NN for a specific task*. I.e., if you successfully train the NAS agent to produce a CNN that's great at <<<< >>>>, it can't do it if you now want it to produce NN's that are good at <<<<<<< >>>>>>>>.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

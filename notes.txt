@@ -1,0 +1,11 @@
+--method with chopping up array into sections actually probably won't work:
+    -for example, that means you can't do a softmax on it (because you need 3 of the entries
+    to end up as 1)
+    -you could instead make it a Q value network, but that would change a lot of fundamental stuff I think
+
+--Instead, I can think of two options:
+    -similar to how pi and V are separately, have pi_parent, pi_child, pi_choice, probably simple?
+    -can have the same architecture if you're willing to have N_max_atoms**2 * N_choices outputs for
+    pi... so like 500 for even a pretty small one
+      -on the other hand, it's possible that having several linear layers is actually worse somehow?
+      
